@@ -6,7 +6,7 @@ Python script for connecting to and parsing data from the ~$30 [Wellue FS20F](ht
 
 Install [bluepy](https://github.com/IanHarvey/bluepy) (requires Linux) and run with
 
-```
+```sh
 sudo python fs20f_logger.py <MAC_ADDRESS>
 ```
 
@@ -25,7 +25,19 @@ The script will keep trying to connect (and reconnect when disconnected) and pri
 {"type": "wave", "unknown_1": 0, "unknown_2": 43, "counter": 135, "ppg": 61, "spo2_wave_val": 9, "sensor_off": false, "parse_time": 1601991825.2818196}
 ```
 
-# Background
+## Simple continuous Sp02 logger
+
+This command will automatically log Sp02 readings to the file `log.json` anytime your FS20F is turned on (and in Bluetooth range):
+
+```sh
+sudo python fs20f_logger.py <MAC_ADDRESS> | grep param > log.json
+```
+
+The resulting file can be read with [pandas](https://pandas.pydata.org/) using `pd.read_json('log.json', lines=True)`.
+
+Note that the FS20F will not turn off while measuring, so you could potentially log Sp02 over many hours this way (e.g. overnight).
+
+# Details
 
 Upon connecting, the FS20F (which advertises itself as "VTM 20F") will automatically start publishing binary data under attribute `FFE4`. Some sample raw data is included in the file `sample_raw_data.hex`.
 
